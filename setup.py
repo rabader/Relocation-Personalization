@@ -5,6 +5,5 @@ setup(
     packages=find_packages(),
     version='0.1.0',
     description='SIADS699 Capstone Project',
-    author='Robert Abader',
     license='MIT',
 )

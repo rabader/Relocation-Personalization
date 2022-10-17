@@ -12,6 +12,7 @@ def get_key(api_service):
     key = secrets[api_service]["key"]
     return key
 
+
 def send_and_process_request(dataset,year,state="*"):
     # all data available at: https://api.census.gov/data.html
 

@@ -51,6 +51,7 @@ def send_and_process_request(dataset,year,state="*"):
         response = requests.get(f"https://api.census.gov/data/timeseries/poverty/saipe?get=COUNTY,STATE,SAEPOVALL_PT,SAEPOVRTALL_PT,SAEMHI_PT,NAME&for=county:*&in=state:{state}&time={year}")
 
     if dataset=="race":
+        # https://api.census.gov/data/2021/acs/acs1/groups/B02001.html
         response = requests.get(f"https://api.census.gov/data/{year}/acs/acs1?get=NAME,group(B02001)&for=county:*&in=state:*")
     
     return response

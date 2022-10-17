@@ -16,7 +16,7 @@ def send_and_process_request(dataset,year,state="*"):
     # all data available at: https://api.census.gov/data.html
 
     # Get API Key:
-    key = get_key(api_service="us-census-bureau")
+    # key = get_key(api_service="us-census-bureau")
 
     # [acs] 2015-2019 American Community Survey: Migration Flows
     # https://api.census.gov/data/2019/acs/flows/variables.html

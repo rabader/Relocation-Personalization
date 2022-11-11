@@ -79,7 +79,49 @@ def clean_ucr_crime_raw_data():
         # Save to Processed Data Folder
         ucr_df.to_csv(f"../data/processed/ucr_crime_{ucr_year}.csv.gz",encoding="utf-8")
 
+
+def clean_health_raw_data():
+    """
+    Function to clean raw health CSV data, and store cleaned results in project's "processed" data folder.
+    """
+    # Get file names of all raw UCR crime data CSVs.
+    health_file_lst = glob.glob('../data/raw/health*.csv')
+    for health_file in health_file_lst:
+        # Read file as dataframe:
+        health_df = pd.read_csv(health_file,encoding="ISO-8859-1") #Social Explorer uses Western Latin-1 (ISO-8859-1) encoding
+
+        # Remove duplicated columns:
+        health_df = health_df.loc[:, ~health_df.columns.str.replace("(\.\d+)$", "").duplicated()]
+
+        # Get year from filename (no indicators in health data):
+        health_year = re.findall(r'\d+', health_file)[0]
+
+        # Begin Cleaning:
+        health_df = health_df.iloc[1:].reset_index(drop=True) #drop first row
+
+        # Get state # to state_name key:
+        state_num_dict = dict()
+        for county_num in range(len(health_df)):
+            try:
+                state_name = health_df.iloc[0]["Qualifying Name"].split(",")[1].strip()
+                state_num = health_df.iloc[county_num]["State"]
+                state_num_dict[state_num] = state_name
+            except:
+                pass
+        health_df["state_name"] = health_df["State"].map(state_num_dict)
+
+        # Get primary key and rename some columns:
+        health_df["FIPS_year"] = health_df["FIPS"].astype(str)+"_"+str(health_year)
+        health_df.rename(columns=lambda x: re.sub("\, .\d.*est.\)",")",x), inplace=True)
+        health_df.drop(columns="Qualifying Name",inplace=True)
+        health_df.rename(columns={"Name of Area":"county_name"}, inplace=True)
+
+        # Save to Processed Data Folder
+        health_df.to_csv(f"../data/processed/health_{health_year}.csv.gz",encoding="utf-8")
 #%%
 # clean_fbi_crime_raw_data()
-# clean_ucr_crime_raw_data
+# clean_ucr_crime_raw_data()
+# clean_health_raw_data()
 
+
+# %%

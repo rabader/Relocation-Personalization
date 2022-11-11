@@ -37,7 +37,7 @@ def clean_fbi_crime_raw_data():
         fbi_df.rename(columns={"Name of Area":"county_name"}, inplace=True)
 
         # Save to Processed Data Folder
-        fbi_df.to_csv(f"../data/processed/fbi_crime_{fbi_year}.csv.gz", encoding="utf-8")
+        fbi_df.to_csv(f"../data/processed/fbi_crime_{fbi_year}.csv.gz", encoding="utf-8-sig")
         
 
 def clean_ucr_crime_raw_data():
@@ -77,7 +77,7 @@ def clean_ucr_crime_raw_data():
         ucr_df.rename(columns={"Name of Area":"county_name"}, inplace=True)
 
         # Save to Processed Data Folder
-        ucr_df.to_csv(f"../data/processed/ucr_crime_{ucr_year}.csv.gz",encoding="utf-8")
+        ucr_df.to_csv(f"../data/processed/ucr_crime_{ucr_year}.csv.gz",encoding="utf-8-sig")
 
 
 def clean_health_raw_data():
@@ -117,7 +117,7 @@ def clean_health_raw_data():
         health_df.rename(columns={"Name of Area":"county_name"}, inplace=True)
 
         # Save to Processed Data Folder
-        health_df.to_csv(f"../data/processed/health_{health_year}.csv.gz",encoding="utf-8")
+        health_df.to_csv(f"../data/processed/health_{health_year}.csv.gz",encoding="utf-8-sig")
 #%%
 # clean_fbi_crime_raw_data()
 # clean_ucr_crime_raw_data()

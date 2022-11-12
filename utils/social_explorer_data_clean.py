@@ -158,9 +158,9 @@ def clean_health_raw_data():
     health_concat_df.to_csv(f"../data/processed/health.csv.gz", encoding="utf-8-sig",index=False)
        
 #%%
-clean_fbi_crime_raw_data()
-clean_ucr_crime_raw_data()
-clean_health_raw_data()
+# clean_fbi_crime_raw_data()
+# clean_ucr_crime_raw_data()
+# clean_health_raw_data()
 
 
 # %%

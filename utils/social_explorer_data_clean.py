@@ -2,10 +2,65 @@
 import pandas as pd
 import glob
 import re
+def clean_population_estimate_raw_data():
+    """
+    Function to clean raw population_estimate CSV data, and store cleaned results in project's "processed" data folder.
+    """
+    # Get file names of all raw FBI crime data CSVs.
+    popest_file_lst = glob.glob('../data/raw/population_estimate*.csv')
+
+    popest_concat_df = pd.DataFrame()
+    for popest_file in popest_file_lst:
+        # Read file as dataframe:
+        popest_df = pd.read_csv(popest_file, encoding="ISO-8859-1") #Social Explorer uses Western Latin-1 (ISO-8859-1) encoding
+
+        # Remove duplicated columns:
+        popest_df = popest_df.loc[:, ~popest_df.columns.str.replace("(\.\d+)$", "").duplicated()]
+
+        # Get year:
+        popest_year = re.findall(r'\d+', popest_file)[0]
+        popest_df["Year"] = popest_year
+
+        # Begin Cleaning:
+        popest_df = popest_df.iloc[1:].reset_index(drop=True) #drop first row
+
+        # Get state # to state_name key:
+        state_num_dict = dict()
+        for county_num in range(len(popest_df)):
+            try:
+                state_name = popest_df.iloc[0]["Qualifying Name"].split(",")[1].strip()
+                state_num = popest_df.iloc[county_num]["State"]
+                state_num_dict[state_num] = state_name
+            except:
+                pass
+
+        popest_df.rename(columns={"State":"state_code","County":"county_code"}, inplace=True)
+        popest_df["State"] = popest_df["state_code"].map(state_num_dict)
+
+        # Get primary key and rename some columns:
+        popest_df["FIPS_Year"] = popest_df["FIPS"].astype(str)+"_"+str(popest_year)
+        popest_df.drop(columns="Qualifying Name",inplace=True)
+        popest_df.rename(columns={"Name of Area":"County"}, inplace=True)
+
+         # Concatenate data
+        popest_concat_df = pd.concat([popest_concat_df,popest_df], ignore_index=True)
+        
+    # Re-order some columns for better readability during exploration:
+    ref_cols = ['FIPS','County','State','FIPS_Year','Year','Total Population']
+    other_cols = [col for col in popest_concat_df.columns if col not in ref_cols and "%" in col] #only keep percentages
+    popest_concat_df = popest_concat_df[ref_cols+other_cols]
+
+    # Drop columns with no data
+    popest_concat_df = popest_concat_df.dropna(axis=1, how='all')
+
+    # Save to Processed Data Folder
+    popest_concat_df.to_csv(f"../data/processed/population_estimate.csv.gz", encoding="utf-8-sig",index=False)
+
 
 def clean_fbi_crime_raw_data():
     """
     Function to clean raw fbi_crime CSV data, and store cleaned results in project's "processed" data folder.
+    Note that columns with "Rate" in the column name are rates per 100,000 people.
     """
     # Get file names of all raw FBI crime data CSVs.
     fbi_file_lst = glob.glob('../data/raw/fbi_crime*.csv')
@@ -14,6 +69,9 @@ def clean_fbi_crime_raw_data():
     for fbi_file in fbi_file_lst:
         # Read file as dataframe:
         fbi_df = pd.read_csv(fbi_file, encoding="ISO-8859-1") #Social Explorer uses Western Latin-1 (ISO-8859-1) encoding
+
+        # Remove duplicated columns:
+        fbi_df = fbi_df.loc[:, ~fbi_df.columns.str.replace("(\.\d+)$", "").duplicated()]
 
         # Get year:
         fbi_year = re.findall(r'\d+', [x for x in fbi_df.columns if "Total Population (" in x][0])[0]
@@ -45,9 +103,12 @@ def clean_fbi_crime_raw_data():
         fbi_concat_df = pd.concat([fbi_concat_df,fbi_df], ignore_index=True)
         
     # Re-order some columns for better readability during exploration:
-    ref_cols = ['FIPS','County','State','FIPS_Year','Year']
-    other_cols = [col for col in fbi_concat_df.columns if col not in ref_cols]
+    ref_cols = ['FIPS','County','State','FIPS_Year','Year','Total Population']
+    other_cols = [col for col in fbi_concat_df.columns if col not in ref_cols and "Rate" in col] #only keep rates
     fbi_concat_df = fbi_concat_df[ref_cols+other_cols]
+
+    # Drop columns with no data
+    fbi_concat_df = fbi_concat_df.dropna(axis=1, how='all')
 
     # Save to Processed Data Folder
     fbi_concat_df.to_csv(f"../data/processed/fbi_crime.csv.gz", encoding="utf-8-sig",index=False)
@@ -56,6 +117,7 @@ def clean_fbi_crime_raw_data():
 def clean_ucr_crime_raw_data():
     """
     Function to clean raw ucr_crime CSV data, and store cleaned results in project's "processed" data folder.
+    Note that columns with "Rate" in the column name are rates per 100,000 people.
     """
     # Get file names of all raw UCR crime data CSVs.
     ucr_file_lst = glob.glob('../data/raw/ucr_crime*.csv')
@@ -97,9 +159,12 @@ def clean_ucr_crime_raw_data():
         ucr_concat_df = pd.concat([ucr_concat_df,ucr_df], ignore_index=True)
     
     # Re-order some columns for better readability during exploration:
-    ref_cols = ['FIPS','County','State','FIPS_Year','Year']
-    other_cols = [col for col in ucr_concat_df.columns if col not in ref_cols]
+    ref_cols = ['FIPS','County','State','FIPS_Year','Year','Total Population']
+    other_cols = [col for col in ucr_concat_df.columns if col not in ref_cols and "Rate" in col] #only keep rates]
     ucr_concat_df = ucr_concat_df[ref_cols+other_cols]
+
+    # Drop columns with no data
+    ucr_concat_df = ucr_concat_df.dropna(axis=1, how='all')
 
     # Save to Processed Data Folder
     ucr_concat_df.to_csv(f"../data/processed/ucr_crime.csv.gz", encoding="utf-8-sig",index=False)
@@ -150,17 +215,26 @@ def clean_health_raw_data():
         health_concat_df = pd.concat([health_concat_df,health_df], ignore_index=True)
     
     # Re-order some columns for better readability during exploration:
-    ref_cols = ['FIPS','County','State','FIPS_Year','Year']
+    # Only Keep Data with Rates:
+    popestdf = pd.read_csv("../data/processed/population_estimate.csv.gz", usecols = ["FIPS_Year","Total Population"],encoding="utf-8-sig")
+    health_concat_df = health_concat_df.merge(popestdf,how="left",on="FIPS_Year")
+    ref_cols = ['FIPS','County','State','FIPS_Year','Year','Total Population']
     other_cols = [col for col in health_concat_df.columns if col not in ref_cols]
-    health_concat_df = health_concat_df[ref_cols+other_cols]
+    rate_cols = [col for col in other_cols if "Rate" in col or "%" in col or "Percent" in col] #only keep rates]
+    health_concat_df = health_concat_df[ref_cols+rate_cols]
+
+    # Drop columns with no data
+    health_concat_df = health_concat_df.dropna(axis=1, how='all')
 
     # Save to Processed Data Folder
     health_concat_df.to_csv(f"../data/processed/health.csv.gz", encoding="utf-8-sig",index=False)
        
 #%%
-clean_fbi_crime_raw_data()
-clean_ucr_crime_raw_data()
-clean_health_raw_data()
+# clean_population_estimate_raw_data()
+# clean_fbi_crime_raw_data()
+# clean_ucr_crime_raw_data()
+# clean_health_raw_data()
+
 
 
 # %%

@@ -5,6 +5,12 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
 import matplotlib.pyplot as plt
 
+#suppress warnings
+def warn(*args, **kwargs):
+    pass
+import warnings
+warnings.warn = warn
+
 def get_pca_components(df,feature_col_lst,n_components,random_state=None,fig_width=8,fig_height=2):
     X = df[feature_col_lst]
 

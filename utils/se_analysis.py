@@ -3,6 +3,8 @@ import numpy as np
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
+from sklearn.experimental import enable_iterative_imputer
+from sklearn.impute import IterativeImputer
 import matplotlib.pyplot as plt
 
 #suppress warnings
@@ -11,16 +13,20 @@ def warn(*args, **kwargs):
 import warnings
 warnings.warn = warn
 
-def get_pca_components(df,feature_col_lst,n_components,random_state=None,fig_width=8,fig_height=2):
+def get_pca_components(df,feature_col_lst,n_components,random_state=None,max_iter=10,fig_width=8,fig_height=2):
     X = df[feature_col_lst]
 
     # Normalize X
     X_normalized = StandardScaler().fit(X).transform(X)
 
     # Impute Missing Values to get PCA:
-    imp_mean = SimpleImputer(missing_values=np.nan, strategy='mean')
-    imp_mean.fit(X_normalized)
-    imp_X = imp_mean.transform(X)
+    imp_iter = IterativeImputer(max_iter=max_iter, random_state=random_state, verbose=1) # LOOK INTO "add_indicator" karg
+    imp_iter.fit(X_normalized)
+    imp_X = imp_iter.transform(X)
+    
+    # imp_mean = SimpleImputer(missing_values=np.nan, strategy='mean')
+    # imp_mean.fit(X_normalized)
+    # imp_X = imp_mean.transform(X)
 
     # Perform PCA
     pca = PCA(n_components=n_components,random_state=random_state).fit(imp_X)
@@ -38,3 +44,4 @@ def get_pca_components(df,feature_col_lst,n_components,random_state=None,fig_wid
     plt.rcParams["figure.figsize"]= (fig_width,fig_height)
 
     return pca_feature_names, pca_chart
+

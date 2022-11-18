@@ -15,7 +15,7 @@ def clean_population_estimate_raw_data():
         popest_df = pd.read_csv(popest_file, encoding="ISO-8859-1") #Social Explorer uses Western Latin-1 (ISO-8859-1) encoding
 
         # Remove duplicated columns:
-        popest_df = popest_df.loc[:, ~popest_df.columns.str.replace("(\.\d+)$", "").duplicated()]
+        popest_df = popest_df.loc[:, ~popest_df.columns.str.replace("(\.\d+)$", "", regex=True).duplicated()]
 
         # Get year:
         popest_year = re.findall(r'\d+', popest_file)[0]
@@ -42,7 +42,17 @@ def clean_population_estimate_raw_data():
         popest_df.drop(columns="Qualifying Name",inplace=True)
         popest_df.rename(columns={"Name of Area":"County"}, inplace=True)
 
+        # Make all columns Title Case
+        popest_df.columns = [(' '.join([w.title() if w.islower() else w for w in x.split()])) for x in popest_df.columns]
+
+        # Consistent Rate Names in Column Names:
+        popest_df.columns = [x.replace("100 000","100,000") for x in popest_df.columns]
+        popest_df.columns = [x.replace("100000","100,000") for x in popest_df.columns]
+        popest_df.columns = [x.replace("1000","1,000") for x in popest_df.columns]
+        popest_df.columns = [x.replace("1 000","1,000") for x in popest_df.columns]
+
          # Concatenate data
+        popest_df = popest_df.loc[:, ~popest_df.columns.duplicated()]
         popest_concat_df = pd.concat([popest_concat_df,popest_df], ignore_index=True)
         
     # Re-order some columns for better readability during exploration:
@@ -71,7 +81,7 @@ def clean_fbi_crime_raw_data():
         fbi_df = pd.read_csv(fbi_file, encoding="ISO-8859-1") #Social Explorer uses Western Latin-1 (ISO-8859-1) encoding
 
         # Remove duplicated columns:
-        fbi_df = fbi_df.loc[:, ~fbi_df.columns.str.replace("(\.\d+)$", "").duplicated()]
+        fbi_df = fbi_df.loc[:, ~fbi_df.columns.str.replace("(\.\d+)$", "", regex=True).duplicated()]
 
         # Get year:
         fbi_year = re.findall(r'\d+', [x for x in fbi_df.columns if "Total Population (" in x][0])[0]
@@ -99,7 +109,17 @@ def clean_fbi_crime_raw_data():
         fbi_df.drop(columns="Qualifying Name",inplace=True)
         fbi_df.rename(columns={"Name of Area":"County"}, inplace=True)
 
+        # Make all columns Title Case
+        fbi_df.columns = [(' '.join([w.title() if w.islower() else w for w in x.split()])) for x in fbi_df.columns]
+
+        # Consistent Rate Names in Column Names:
+        fbi_df.columns = [x.replace("100 000","100,000") for x in fbi_df.columns]
+        fbi_df.columns = [x.replace("100000","100,000") for x in fbi_df.columns]
+        fbi_df.columns = [x.replace("1000","1,000") for x in fbi_df.columns]
+        fbi_df.columns = [x.replace("1 000","1,000") for x in fbi_df.columns]
+
         # Concatenate data
+        fbi_df = fbi_df.loc[:, ~fbi_df.columns.duplicated()]
         fbi_concat_df = pd.concat([fbi_concat_df,fbi_df], ignore_index=True)
         
     # Re-order some columns for better readability during exploration:
@@ -127,7 +147,7 @@ def clean_ucr_crime_raw_data():
         ucr_df = pd.read_csv(ucr_file,encoding="ISO-8859-1") #Social Explorer uses Western Latin-1 (ISO-8859-1) encoding
 
         # Remove duplicated columns:
-        ucr_df = ucr_df.loc[:, ~ucr_df.columns.str.replace("(\.\d+)$", "").duplicated()]
+        ucr_df = ucr_df.loc[:, ~ucr_df.columns.str.replace("(\.\d+)$", "", regex=True).duplicated()]
 
         # Get year:
         ucr_year = re.findall(r'\d+', [x for x in ucr_df.columns if "Total Population (" in x][0])[0]
@@ -155,7 +175,17 @@ def clean_ucr_crime_raw_data():
         ucr_df.drop(columns="Qualifying Name",inplace=True)
         ucr_df.rename(columns={"Name of Area":"County"}, inplace=True)
 
+        # Make all columns Title Case
+        ucr_df.columns = [(' '.join([w.title() if w.islower() else w for w in x.split()])) for x in ucr_df.columns]
+
+        # Consistent Rate Names in Column Names:
+        ucr_df.columns = [x.replace("100 000","100,000") for x in ucr_df.columns]
+        ucr_df.columns = [x.replace("100000","100,000") for x in ucr_df.columns]
+        ucr_df.columns = [x.replace("1000","1,000") for x in ucr_df.columns]
+        ucr_df.columns = [x.replace("1 000","1,000") for x in ucr_df.columns]
+
         # Concatenate data
+        ucr_df = ucr_df.loc[:, ~ucr_df.columns.duplicated()]
         ucr_concat_df = pd.concat([ucr_concat_df,ucr_df], ignore_index=True)
     
     # Re-order some columns for better readability during exploration:
@@ -183,7 +213,7 @@ def clean_health_raw_data():
         health_df = pd.read_csv(health_file,encoding="ISO-8859-1") #Social Explorer uses Western Latin-1 (ISO-8859-1) encoding
 
         # Remove duplicated columns:
-        health_df = health_df.loc[:, ~health_df.columns.str.replace("(\.\d+)$", "").duplicated()]
+        health_df = health_df.loc[:, ~health_df.columns.str.replace("(\.\d+)$", "", regex=True).duplicated()]
 
         # Get year from filename (no indicators in health data):
         health_year = re.findall(r'\d+', health_file)[0]
@@ -211,8 +241,19 @@ def clean_health_raw_data():
         health_df.drop(columns="Qualifying Name",inplace=True)
         health_df.rename(columns={"Name of Area":"County"}, inplace=True)
 
+        # Make all columns Title Case
+        health_df.columns = [(' '.join([w.title() if w.islower() else w for w in x.split()])) for x in health_df.columns]
+
+        # Consistent Rate Names in Column Names:
+        health_df.columns = [x.replace("100 000","100,000") for x in health_df.columns]
+        health_df.columns = [x.replace("100000","100,000") for x in health_df.columns]
+        health_df.columns = [x.replace("1000","1,000") for x in health_df.columns]
+        health_df.columns = [x.replace("1 000","1,000") for x in health_df.columns]
+
         # Concatenate data
+        health_df = health_df.loc[:, ~health_df.columns.duplicated()]
         health_concat_df = pd.concat([health_concat_df,health_df], ignore_index=True)
+
     
     # Re-order some columns for better readability during exploration:
     # Only Keep Data with Rates:

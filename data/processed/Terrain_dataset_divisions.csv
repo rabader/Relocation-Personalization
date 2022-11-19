@@ -1,0 +1,14 @@
+﻿Development,,,,,,,,,,,,,,,,,
+"% Developed, Open Space & % Developed, Low Intensity",,,,,,,,,,,,,,,,,
+"% Developed, Medium Intensity",,,,,,,,,,,,,,,,,
+"% Developed, High Intensity",,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,
+Forests,,Open fields,,,Wetlands,,,,Open water,,Barren,,,% Perennial Ice/Snow,,,Farmland
+% Deciduous Forest,,% Shrub/Scrub,,,% Woody Wetlands,,,,% Open Water,,% Barren Land (Rock/Sand/Clay),,,% Perennial Ice/Snow,,,% Pasture/Hay
+% Evergreen Forest,,% Grassland/Herbaceous,,,% Emergent Herbaceous Wetlands,,,,,,,,,,,,% Cultivated Crops
+% Mixed Forest,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,
+,Farmland,Houses with lots of land,Suburbia,Big city,Forests,Open fields,Wetlands,Open water,Rock/Sand/Clay,Perennial ice/snow,,,,,,,
+Min,0,0.167009241,0.000525273,0,0,0,0,0,0,0,,,,,,,
+Max,93.30763182,72.32929515,36.65841146,59.42508495,93.54565236,99.08396985,92.28387863,57.80782229,39.13433443,5.028827057,,,,,,,

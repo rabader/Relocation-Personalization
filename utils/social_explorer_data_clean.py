@@ -28,7 +28,7 @@ def clean_population_estimate_raw_data():
         state_num_dict = dict()
         for county_num in range(len(popest_df)):
             try:
-                state_name = popest_df.iloc[0]["Qualifying Name"].split(",")[1].strip()
+                state_name = popest_df.iloc[county_num]["Qualifying Name"].split(",")[1].strip()
                 state_num = popest_df.iloc[county_num]["State"]
                 state_num_dict[state_num] = state_name
             except:
@@ -94,7 +94,7 @@ def clean_fbi_crime_raw_data():
         state_num_dict = dict()
         for county_num in range(len(fbi_df)):
             try:
-                state_name = fbi_df.iloc[0]["Qualifying Name"].split(",")[1].strip()
+                state_name = fbi_df.iloc[county_num]["Qualifying Name"].split(",")[1].strip()
                 state_num = fbi_df.iloc[county_num]["State"]
                 state_num_dict[state_num] = state_name
             except:
@@ -160,7 +160,7 @@ def clean_ucr_crime_raw_data():
         state_num_dict = dict()
         for county_num in range(len(ucr_df)):
             try:
-                state_name = ucr_df.iloc[0]["Qualifying Name"].split(",")[1].strip()
+                state_name = ucr_df.iloc[county_num]["Qualifying Name"].split(",")[1].strip()
                 state_num = ucr_df.iloc[county_num]["State"]
                 state_num_dict[state_num] = state_name
             except:
@@ -226,7 +226,7 @@ def clean_health_raw_data():
         state_num_dict = dict()
         for county_num in range(len(health_df)):
             try:
-                state_name = health_df.iloc[0]["Qualifying Name"].split(",")[1].strip()
+                state_name = health_df.iloc[county_num]["Qualifying Name"].split(",")[1].strip()
                 state_num = health_df.iloc[county_num]["State"]
                 state_num_dict[state_num] = state_name
             except:
@@ -275,7 +275,3 @@ def clean_health_raw_data():
 # clean_fbi_crime_raw_data()
 # clean_ucr_crime_raw_data()
 # clean_health_raw_data()
-
-
-
-# %%

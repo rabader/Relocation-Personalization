@@ -247,6 +247,9 @@ def clean_health_raw_data():
         # Remove the word "Of" to take care of inconsistencies in column names from year-to-year
         health_df.rename(columns=lambda x: re.sub("Of ","",x), inplace=True)
 
+        # Fix specific columns that were mislabeled for some years:
+        health_df.rename(columns={"Child Mortality Rate Per 1,000 Population":"Child Mortality Rate Per 100,000 Population","Child Mortality Rate":"Child Mortality Rate Per 100,000 Population"}, errors="ignore", inplace=True)
+
         # Consistent Rate Names in Column Names:
         health_df.columns = [x.replace("100 000","100,000") for x in health_df.columns]
         health_df.columns = [x.replace("100000","100,000") for x in health_df.columns]
@@ -279,3 +282,5 @@ def clean_health_raw_data():
 # clean_ucr_crime_raw_data()
 # clean_health_raw_data()
 
+
+# %%

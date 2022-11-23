@@ -244,6 +244,9 @@ def clean_health_raw_data():
         # Make all columns Title Case
         health_df.columns = [(' '.join([w.title() if w.islower() else w for w in x.split()])) for x in health_df.columns]
 
+        # Remove the word "Of" to take care of inconsistencies in column names from year-to-year
+        health_df.rename(columns=lambda x: re.sub("Of ","",x), inplace=True)
+
         # Consistent Rate Names in Column Names:
         health_df.columns = [x.replace("100 000","100,000") for x in health_df.columns]
         health_df.columns = [x.replace("100000","100,000") for x in health_df.columns]
@@ -275,3 +278,4 @@ def clean_health_raw_data():
 # clean_fbi_crime_raw_data()
 # clean_ucr_crime_raw_data()
 # clean_health_raw_data()
+

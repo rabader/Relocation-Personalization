@@ -22,9 +22,11 @@ def get_pca_components(df,impute_feature_col_lst,pca_feature_col_lst,n_component
     
     # First filter out any rows that are missing data across ALL pca_feature_cols:
     df.dropna(subset=pca_feature_col_lst, how="all", inplace=True) #if there is a value in at least 1 of these columns, the rest will be imputed
+    df = df.dropna(axis=1, how='all') #drop columns where all the values are null
     df.reset_index(drop=True,inplace=True)
 
     # Select X dataframe:
+    impute_feature_col_lst = [x for x in df.columns if x in impute_feature_col_lst]
     X = df[impute_feature_col_lst]
 
     # One-Hot-Encode columns with string data
@@ -32,8 +34,8 @@ def get_pca_components(df,impute_feature_col_lst,pca_feature_col_lst,n_component
     X_ohe_df = pd.get_dummies(X,columns=str_cols)
 
     # Scale X
-    min_max_scaler = MinMaxScaler(feature_range=(0,1))
-    X_ohe = min_max_scaler.fit_transform(X_ohe_df) #non-distorting, but makes defining min/max values for iterative imputation easier
+    min_max_scaler = MinMaxScaler(feature_range=(0,1)).fit(X_ohe_df)
+    X_ohe = min_max_scaler.transform(X_ohe_df) #non-distorting, but makes defining min/max values for iterative imputation easier
 
     # Impute Missing Values to get PCA (choose one of the below imputation methods):
     if imputation_method=="simple":

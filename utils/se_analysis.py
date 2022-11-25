@@ -22,16 +22,20 @@ def get_pca_components(df,impute_feature_col_lst,pca_feature_col_lst,n_component
     
     # First filter out any rows that are missing data across ALL pca_feature_cols:
     df.dropna(subset=pca_feature_col_lst, how="all", inplace=True) #if there is a value in at least 1 of these columns, the rest will be imputed
-    
+    df = df.dropna(axis=1, how='all') #drop columns where all the values are null
+    df.reset_index(drop=True,inplace=True)
+
     # Select X dataframe:
+    impute_feature_col_lst = [x for x in df.columns if x in impute_feature_col_lst]
     X = df[impute_feature_col_lst]
 
     # One-Hot-Encode columns with string data
     str_cols = [x for x in X.columns if X[x].dtype=="O"]
-    X_ohe = pd.get_dummies(X,columns=str_cols)
+    X_ohe_df = pd.get_dummies(X,columns=str_cols)
 
     # Scale X
-    X_ohe = MinMaxScaler(feature_range=(0,1)).fit_transform(X_ohe) #non-distorting, but makes defining min/max values for iterative imputation easier
+    min_max_scaler = MinMaxScaler(feature_range=(0,1)).fit(X_ohe_df)
+    X_ohe = min_max_scaler.transform(X_ohe_df) #non-distorting, but makes defining min/max values for iterative imputation easier
 
     # Impute Missing Values to get PCA (choose one of the below imputation methods):
     if imputation_method=="simple":
@@ -48,6 +52,15 @@ def get_pca_components(df,impute_feature_col_lst,pca_feature_col_lst,n_component
         # Use KNN Imputer
         imp_knn = KNNImputer(n_neighbors=n_neighbors, weights="uniform")
         imp_X = imp_knn.fit_transform(X_ohe)
+
+    # Save Imputed DataFrame:
+    imp_X_unscaled = min_max_scaler.inverse_transform(imp_X)
+    imputed_df = pd.DataFrame(imp_X_unscaled, columns=X_ohe_df.columns)
+    imputed_df_non_ohe_cols = [x for x in imputed_df.columns if x in impute_feature_col_lst]
+    imputed_df = imputed_df[imputed_df_non_ohe_cols] #remove one-hot-encoded columns
+    df_cols_not_imputed = [x for x in df.columns if x not in imputed_df.columns]
+    imputed_df = df[df_cols_not_imputed].merge(imputed_df,left_index=True,right_index=True)
+    imputed_idx_df = df.isnull()
 
     # Normalize X
     X_scaled = StandardScaler().fit_transform(imp_X)
@@ -73,7 +86,7 @@ def get_pca_components(df,impute_feature_col_lst,pca_feature_col_lst,n_component
     plt.xscale("log")
     plt.rcParams["figure.figsize"]= (fig_width,fig_height)
 
-    return pca_feature_names, pca_chart
+    return pca_feature_names, pca_chart, imputed_df, imputed_idx_df
 
 
 # def perform_knn_analysis(user_df,county_df):

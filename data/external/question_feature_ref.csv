@@ -1,0 +1,65 @@
+﻿Question,county_column_ref
+Acs-1),Population Density (Per Sq. Mile)
+Acs-2),% Children Under 10
+Acs-3),% Children 10 and Older
+Acs-4),% Couples that are Same-Sex
+Acs-5),% Population Over 25 with at Least a Bachelor Degree
+Acs-6),% Civilian Population 18 Years and Over that is a Veteran
+Acs-7),% Foreign Born (Naturalized or Otherwise)
+Acs-8.1),% Asian
+Acs-8.2),% Black
+Acs-8.3),% Hawaiian or Pacific Islander
+Acs-8.4),% Hispanic
+Acs-8.5),% Native American
+Acs-8.6),% Two or More Races
+Acs-8.7),% White
+Acs-8.8),% Other Race
+Acs-9),Median Household Income (In 2020 Inflation Adjusted Dollars)
+Acs-10),Median Gross Rent
+Acs-11),Average Commute to Work (In Min)
+Ter-1.1),Big city
+Ter-1.2),Farmland
+Ter-1.3),Forests
+Ter-1.4),Houses with lots of land
+Ter-1.5),Open fields
+Ter-1.6),Open water
+Ter-1.7),Perennial ice/snow
+Ter-1.8),Rock/Sand/Clay
+Ter-1.9),Suburbia
+Ter-1.10),Wetlands
+Wth-1),Winter Avg temp (F)
+Wth-2),Summer Avg temp (F)
+Wth-3),Avg Yearly Rainfall (in)
+Wth-4),Yearly snowfall (in)
+Wth-5),Hours Sunshine Daily
+Wth-6),Clear Days
+Wth-7),Days with Snow
+SD-1),SchoolDigger Rank Of Elementary
+SD-2),SchoolDigger Rank Middle
+SD-3),SchoolDigger Rank High
+SD-4),Total Student membership/Full-Time-Equvalent teachers
+SD-5),Number of All students
+SD-6.1),% Asian students
+SD-6.2),% Black students
+SD-6.3),% Hawaiian Native/Pacific Islander students
+SD-6.4),% Hispanic students
+SD-6.5),% American Indian/Alaska Native students
+SD-6.6),% students with Two or More Races
+SD-6.7),% White students
+Rel-1),All Religious Adherence Rate
+Rel-2),
+Hth-1),"Primary Care Physicians (PCP) Rate Per 100,000 Population"
+Hth-2),"Mental Health Providers (MHP) Rate Per 100,000 Population"
+Hth-3),"Dentists Rate Per 100,000 Population"
+Hth-4),Percent Adults With Limited Access To Doctor Due To Costs
+Hth-5),Percent Persons With Limited Access To Healthy Foods
+Hth-6),Percent Percent Physically Inactive Persons (20 Years And Over)
+Hth-7),Percent Obese Persons (20 Years And Over)
+Hth-8),Percent Adults That Report Fair Or Poor Health (Persons 18 Years And Over)
+Hth-9),Percent Current Smokers (Persons 18 Years And Over)
+Hth-10),Percent Drinking Adults (Persons 18 Years And Over)
+Hth-11),"Chlamydia Cases Rate Per 100,000 Population"
+Hth-12),"Child Mortality Rate Per 100,000 Population"
+Hth-13),"Teen Births Rate Per 1,000 Population (Females 15 To 19 Years)"
+Hth-14),"Infant Mortality Rate Per 1,000 Live Births"
+Hth-15),Percent Low Birthweight Births (<2.5Kg)

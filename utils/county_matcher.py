@@ -4,7 +4,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.neighbors import KNeighborsClassifier
 
 
-def county_matcher(county_df,user_ref_df,feature_cols,target_col="FIPS",n_neighbors = 500):
+def county_matcher(county_df,user_ref_df,feature_cols,target_col="FIPS",n_neighbors = 500,metric="euclidean"):
     # Scale user weights:
     user_weights_array = user_ref_df[["Importance"]].to_numpy().reshape(1,-1)[0]
     weights_array_max = user_ref_df[["max_importance"]].to_numpy().reshape(1,-1)[0]
@@ -26,7 +26,7 @@ def county_matcher(county_df,user_ref_df,feature_cols,target_col="FIPS",n_neighb
     X_scaled_weighted = X_scaled*user_weights_array_scaled #incorporate user-selected importance weights
 
     # Create and Fit KNN Classifier:
-    neigh = KNeighborsClassifier(n_neighbors=n_neighbors, weights="distance")
+    neigh = KNeighborsClassifier(n_neighbors=n_neighbors, weights="distance", metric=metric)
     neigh.fit(X_scaled_weighted, y)
 
     # Get indices to neighbors and their distances:
@@ -36,4 +36,3 @@ def county_matcher(county_df,user_ref_df,feature_cols,target_col="FIPS",n_neighb
     nearest_neighbors = county_df[["FIPS","County","State"]].iloc[np.r_[ind][0]]
     
     return nearest_neighbors
-    # return X,X_scaled,X_scaled_weighted

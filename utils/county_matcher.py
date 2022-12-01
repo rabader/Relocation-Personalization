@@ -33,7 +33,7 @@ def county_matcher(county_df,user_ref_df,feature_cols,target_col="FIPS",n_neighb
     dist,ind = neigh.kneighbors(user_response_scaled,return_distance=True)
 
     # Find nearest neighbors based on user's responses/weights
-    nearest_neighbors = county_df[["FIPS","County","State"]].iloc[np.r_[ind][0]].reset_index()
+    nearest_neighbors = county_df[["FIPS","County","State"]].iloc[np.r_[ind][0]].reset_index(drop=True)
     nearest_neighbors["distance_metric"] = pd.DataFrame({"distance_metric":dist[0]})
     
     return nearest_neighbors

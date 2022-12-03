@@ -2,6 +2,8 @@ relocation-personalization
 ==============================
 
 SIADS699 Capstone Project
+[Project Summary](https://docs.google.com/document/d/1FIWErmp5vROyqxZ-FWEhxqRoRkev7X2j9UK_XVgYvN8/edit)
+
 
 Project Organization
 ------------

@@ -1,52 +1,52 @@
-﻿State,State and Mean Local Sales Tax,Income Tax (Lowest Bracket),Income Tax (Highest Bracket),Median Property Tax
-Alabama,8.91,2,5,0.33
-Alaska,1.76,0,0,1.04
-Arizona,8.17,2.59,4.5,0.72
-Arkansas,6.5,2,6.6,0.52
-California,8.44,1,13.3,0.74
-Colorado,7.44,4.63,4.63,0.6
-Connecticut,6.35,3,6.99,1.63
-Delaware,0,2.2,6.6,0.43
-District Of Columbia,5.75,4,8.95,0.46
-Florida,6.65,0,0,0.97
-Georgia,6.96,1,5.75,0.83
-Hawaii,4.35,1.4,11,0.26
-Idaho,6.01,1.12,6.92,0.69
-Illinois,8.19,4.95,4.95,1.73
-Indiana,7,3.23,3.23,0.85
-Iowa,6.78,0.33,8.53,1.29
-Kansas,8.55,3.1,5.7,1.29
-Kentucky,6,5,5,0.72
-Louisiana,8.91,2,6,0.18
-Maine,5.5,5.8,7.15,1.09
-Maryland,6,2,5.75,0.87
-Massachusetts,6.25,5,5,1.04
-Michigan,6,4.25,4.25,1.62
-Minnesota,7.21,5.35,9.85,1.05
-Mississippi,7.07,3,5,0.52
-Missouri,7.81,1.5,5.4,0.91
-Montana,0,1,6.9,0.83
-Nebraska,6.8,2.46,6.84,1.76
-Nevada,7.94,0,0,0.84
-New Hampshire,0,5,5,1.86
-New Jersey,7,1.4,10.75,1.89
-New Mexico,7.35,1.7,4.9,0.55
-New York,8.48,4,8.82,1.23
-North Carolina,6.9,5.25,5.25,0.78
-North Dakota,6.56,1.1,2.9,1.42
-Ohio,7.1,2.85,4.8,1.36
-Oklahoma,8.77,0.5,5,0.74
-Oregon,0,5,9.9,0.87
-Pennsylvania,6.34,3.07,3.07,1.35
-Rhode Island,7,3.75,5.99,1.35
-South Carolina,7.13,0,7,0.5
-South Dakota,5.83,0,0,1.28
-Tennessee,9.45,1,1,0.68
-Texas,8.05,0,0,1.81
-Utah,6.68,4.95,4.95,0.6
-Vermont,6.14,3.35,8.75,1.59
-Virginia,5.63,2,5.75,0.74
-Washington,8.89,0,0,0.92
-West Virginia,6.07,3,6.5,0.49
-Wisconsin,5.43,4,7.65,1.76
-Wyoming,5.47,0,0,0.58
+﻿State,State and Mean Local Sales Tax,State and Mean Local Sales Tax D,Income Tax (Lowest Bracket),Income Tax (Lowest Bracket) D,Income Tax (Highest Bracket),Income Tax (Highest Bracket) D,Median Property Tax,Median Property Tax D
+Alabama,8.91,5,2,2,5,2,0.33,1
+Alaska,1.76,1,0,1,0,1,1.04,3
+Arizona,8.17,5,2.59,3,4.5,2,0.72,2
+Arkansas,6.5,4,2,2,6.6,3,0.52,1
+California,8.44,5,1,1,13.3,5,0.74,2
+Colorado,7.44,4,4.63,5,4.63,2,0.6,2
+Connecticut,6.35,4,3,3,6.99,3,1.63,5
+Delaware,0,1,2.2,3,6.6,3,0.43,1
+District Of Columbia,5.75,3,4,4,8.95,5,0.46,1
+Florida,6.65,4,0,1,0,1,0.97,3
+Georgia,6.96,4,1,1,5.75,3,0.83,3
+Hawaii,4.35,3,1.4,2,11,5,0.26,1
+Idaho,6.01,4,1.12,2,6.92,3,0.69,2
+Illinois,8.19,5,4.95,5,4.95,2,1.73,5
+Indiana,7,4,3.23,4,3.23,2,0.85,3
+Iowa,6.78,4,0.33,1,8.53,5,1.29,4
+Kansas,8.55,5,3.1,4,5.7,3,1.29,4
+Kentucky,6,3,5,5,5,2,0.72,2
+Louisiana,8.91,5,2,2,6,3,0.18,1
+Maine,5.5,3,5.8,5,7.15,4,1.09,3
+Maryland,6,3,2,2,5.75,3,0.87,3
+Massachusetts,6.25,4,5,5,5,2,1.04,3
+Michigan,6,3,4.25,5,4.25,2,1.62,5
+Minnesota,7.21,4,5.35,5,9.85,5,1.05,3
+Mississippi,7.07,4,3,3,5,2,0.52,1
+Missouri,7.81,4,1.5,2,5.4,3,0.91,3
+Montana,0,1,1,1,6.9,3,0.83,3
+Nebraska,6.8,4,2.46,3,6.84,3,1.76,5
+Nevada,7.94,4,0,1,0,1,0.84,3
+New Hampshire,0,1,5,5,5,2,1.86,5
+New Jersey,7,4,1.4,2,10.75,5,1.89,5
+New Mexico,7.35,4,1.7,2,4.9,2,0.55,2
+New York,8.48,5,4,4,8.82,5,1.23,4
+North Carolina,6.9,4,5.25,5,5.25,3,0.78,2
+North Dakota,6.56,4,1.1,2,2.9,2,1.42,4
+Ohio,7.1,4,2.85,3,4.8,2,1.36,4
+Oklahoma,8.77,5,0.5,1,5,2,0.74,2
+Oregon,0,1,5,5,9.9,5,0.87,3
+Pennsylvania,6.34,4,3.07,4,3.07,2,1.35,4
+Rhode Island,7,4,3.75,4,5.99,3,1.35,4
+South Carolina,7.13,4,0,1,7,3,0.5,1
+South Dakota,5.83,3,0,1,0,1,1.28,4
+Tennessee,9.45,5,1,1,1,1,0.68,2
+Texas,8.05,5,0,1,0,1,1.81,5
+Utah,6.68,4,4.95,5,4.95,2,0.6,2
+Vermont,6.14,4,3.35,4,8.75,5,1.59,5
+Virginia,5.63,3,2,2,5.75,3,0.74,2
+Washington,8.89,5,0,1,0,1,0.92,3
+West Virginia,6.07,4,3,3,6.5,3,0.49,1
+Wisconsin,5.43,3,4,4,7.65,4,1.76,5
+Wyoming,5.47,3,0,1,0,1,0.58,2

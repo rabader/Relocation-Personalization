@@ -1,12 +1,12 @@
 relocation-destination-personalization-machination
 ==============================
 
-SIADS699 Capstone Project
-
-[Project Report](https://docs.google.com/document/d/1FIWErmp5vROyqxZ-FWEhxqRoRkev7X2j9UK_XVgYvN8/edit)
+[SIADS699 Capstone Project Report](https://docs.google.com/document/d/1FIWErmp5vROyqxZ-FWEhxqRoRkev7X2j9UK_XVgYvN8/edit)
 
 Team Members:
+------------
 Collin Clifford - cgcliff
+
 Robert Abader - abaderro
 
 Project Organization

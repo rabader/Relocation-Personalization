@@ -3,7 +3,19 @@ import numpy as np
 
 def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, hth_d, fbi_d, pol_d, tax_d):
 
-    # add 'Scores' column with 0 penalty points
+    # remove Alaska, Puerto Rico, and DC
+    FIPS_d = FIPS_d[(FIPS_d['State']!='Alaska') & (FIPS_d['State']!='Puerto Rico') &
+                (FIPS_d['State']!= 'District Of Columbia')]
+
+    # include only counties that are commonly included in all datasets
+    # print("Starting county count: " + str(len(FIPS_d.index)))
+    FIPS_d = FIPS_d.filter(items = fbi_d.index.unique(), axis=0) # crime
+    FIPS_d = FIPS_d.filter(items = ter_d.index.unique(), axis=0) # terrain
+    FIPS_d = FIPS_d.filter(items = rel_d.index.unique(), axis=0) # religion
+    FIPS_d = FIPS_d.filter(items = hth_d.index.unique(), axis=0) # health
+    # print("Final county count: " + str(len(FIPS_d.index)))
+
+    # add 'Scores' column with 0 penalty points to each dataset to accumulate penalty points by topic
     dfs = [FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, hth_d, fbi_d, pol_d, tax_d]
 
     for df in dfs:
@@ -16,18 +28,31 @@ def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, ht
         exec(df+'_imp = []')
 
     # create grader function (0 penality if at least/most)
+    # create grader function (0 penality if at least/most)
     def grader(df, response_row, actual):
-        
-        if quiz.iloc[response_row,1] == "At least":
-            score_series = df[actual].apply(lambda x: max(quiz.iloc[response_row,2] - x, 0)**2 * quiz.iloc[response_row,3])
-        elif quiz.iloc[response_row,1] == "At most:":
-            score_series = df[actual].apply(lambda x: max(x - quiz.iloc[response_row,2], 0)**2 * quiz.iloc[response_row,3])
-        else: 
-            score_series = abs(quiz.iloc[response_row,2] - df[actual])**2 * quiz.iloc[response_row,3]
         
         imp_score = quiz.iloc[response_row,3] # importance score of this question
         
+        if quiz.iloc[response_row,1] == "At least":
+            score_series = df[actual].apply(lambda x: max(quiz.iloc[response_row,2] - x, 0)**2 * imp_score)
+        elif quiz.iloc[response_row,1] == "At most:":
+            score_series = df[actual].apply(lambda x: max(x - quiz.iloc[response_row,2], 0)**2 * imp_score)
+        else: 
+            score_series = abs(quiz.iloc[response_row,2] - df[actual])**2 * imp_score
+        
         return score_series, imp_score
+
+    # create function that uses the most recent year in the dataset for questionnaire comparison
+    def most_recent(df):
+        df_all = df.copy()
+        df = df.reset_index()
+        df_recent = df.copy()
+        df_recent = df_recent.groupby(['FIPS'])['Year'].max() # get most recent data per county
+        df_recent = df_recent.reset_index()
+        df_recent = pd.DataFrame(df_recent, columns=['FIPS','Year']) # make df of each FIPS and most recent year
+        df = pd.merge(df_recent, df, left_on=['FIPS','Year'], right_on=['FIPS','Year'], how='left') # filter df to match
+        df = df.set_index('FIPS')
+        return df_all, df
 
     # Rel) blanks in this dataset are equal to zero
     rel_d = rel_d.fillna(0)
@@ -50,7 +75,7 @@ def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, ht
     sd_cats = ['SchoolDigger Number of Stars Elementary', 'SchoolDigger Number of Stars Middle', 
             'SchoolDigger Number of Stars High', 'Student/Teacher Ratio D', 'Number All Students D']
 
-    start_loc = 35
+    start_loc = 35 # start_loc is is the starting row for the questionnaire answer sheet
     for sd_cat in sd_cats:
         score, imp_score = grader(sd_d, start_loc + sd_cats.index(sd_cat), sd_cat)
         sd_d['Scores'] += score
@@ -58,7 +83,7 @@ def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, ht
 
     # SD-6) For racial distribution, I prefer there to be AT LEAST this percentage of each race:
     races = ['% Asian students', '% Black students', '% Hawaiian Native/Pacific Islander students', '% Hispanic students',
-            '% American Indian/Alaska Native students', '% students with Two or More Races', '% White students']
+           '% American Indian/Alaska Native students', '% students with Two or More Races', '% White students']
 
     for race in races:
         sd_d['Scores'] += sd_d[race].apply(lambda x: max(((quiz.iloc[races.index(race)+40,2] - x)/25)**2,0) * quiz.iloc[46,3])
@@ -71,11 +96,15 @@ def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, ht
     FIPS_d = FIPS_d.reset_index()
     sd_d_scores = sd_d_grouped[['County','State','Scores']].rename({'Scores':'sd_Scores'}, axis='columns')
     FIPS_d = pd.merge(FIPS_d, sd_d_scores, left_on=['County','State'], right_on=['County','State'], how='left')
-    FIPS_d['Scores'] += FIPS_d['sd_Scores']
+    FIPS_d['sd_Scores'] = FIPS_d['sd_Scores'].fillna(FIPS_d['sd_Scores'].mean()) # give mean penalty to non-matching districts
+    FIPS_d['Scores'] += FIPS_d['sd_Scores'] # add SD points to cumulative points
     del FIPS_d['sd_Scores']
     FIPS_d = FIPS_d.set_index('FIPS')
 
-    # Ter) Look at only the most recent completed year but keep entirity for time series analysis
+    # test against only the most recent completed year but keep entirity for time series analysis
+    ter_d_all, ter_d = most_recent(ter_d)
+
+    # Ter) test against only the most recent completed year but keep entirity for time series analysis
     ter_d_all = ter_d.copy()
     ter_d = ter_d_all[ter_d['Year']==2011]
 
@@ -109,7 +138,7 @@ def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, ht
     del FIPS_d['wth_Scores']
     FIPS_d = FIPS_d.set_index('FIPS')
 
-    # Acs) first questions
+    # ACS) first questions
     acs_cats = ['% Pop Density D', '% Children Under 10 D', '% Children 10 and Older D', '% Couples that are Same-Sex D',
             '% Population Over 25 with at Least a Bachelor Degree D', 
             '% Civilian Population 18 Years and Over that is a Veteran D',
@@ -141,9 +170,13 @@ def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, ht
     # ACS) add acs scores to FIPS_d score total
     FIPS_d['Scores'] = FIPS_d['Scores'].add(acs_d['Scores'], fill_value=0)
 
+
+    # test against only the most recent completed year but keep entirity for time series analysis
+    hth_d_all, hth_d = most_recent(hth_d)
+
     # Hth) Look at only the most recent completed year but keep entirity for time series analysis
-    hth_d_all = hth_d.copy()
-    hth_d = hth_d_all[hth_d['Year']==2020]
+    # hth_d_all = hth_d.copy()
+    # hth_d = hth_d_all[hth_d['Year']==2020]
 
     # Hth) all questions
     hth_cats = ['Primary Care Physicians Per 100,000 Population D',
@@ -171,10 +204,9 @@ def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, ht
     # Hth) add hth scores to FIPS_d score total
     FIPS_d['Scores'] = FIPS_d['Scores'].add(hth_d['Scores'], fill_value=0)
 
-    # FBI) Look at only the most recent completed year but keep entirity for time series analysis
-    fbi_d_all = fbi_d.copy()
-    fbi_d = fbi_d_all[fbi_d['Year']==2017]
-    fbi_d.index = fbi_d.index.astype(int, copy=False) # change index type to int to match FIPS
+    # test against only the most recent completed year but keep entirity for time series analysis
+    fbi_d_all, fbi_d = most_recent(fbi_d)
+
 
     # FBI) all questions
     fbi_cats = ['Violent Crimes Rate D','Property Crimes Rate D']
@@ -191,10 +223,11 @@ def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, ht
     # Pol) blanks in this dataset are equal to zero
     pol_d = pol_d.fillna(0)
 
-    # Pol) Look at only the most recent completed year but keep entirity for time series analysis
-    pol_d_all = pol_d.copy()
-    pol_d = pol_d_all[pol_d['Year']==2020]
-    pol_d.index = pol_d.index.astype(int, copy=False) # change index type to int to match FIPS
+    # Pol) test against only the most recent completed year but keep entirity for time series analysis
+    # pol_d_all = pol_d.copy()
+    # pol_d = pol_d_all[pol_d['Year']==2020]
+    # test against only the most recent completed year but keep entirity for time series analysis
+    pol_d_all, pol_d = most_recent(pol_d)
 
     # Pol) I prefer there to be a significant presence of this political group:
     if quiz.iloc[66,2] != 0:
@@ -224,8 +257,8 @@ def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, ht
     del FIPS_d['tax_Scores']
     FIPS_d = FIPS_d.set_index('FIPS')
 
+    # sort values and remove unneeded rows
     FIPS_d.sort_values(by='Scores', inplace=True)
-    FIPS_d = FIPS_d[(FIPS_d['State']!='Alaska') & (FIPS_d['State']!='Puerto Rico')] # remove Alaska and Puerto Rico
     FIPS_d = FIPS_d.round({'Scores':2})
 
     return FIPS_d.reset_index(drop=True)

@@ -32,7 +32,9 @@ How To Run This Code
 ------------
 #### 0. Install Dependencies
 In a new environment, install the requirements in the requirements.txt file. This can be done with the examples shown here using pip or conda:
+
     pip install -r requirements.txt
+    
     conda install --file requirements.txt
 
 #### 1. Data Cleaning

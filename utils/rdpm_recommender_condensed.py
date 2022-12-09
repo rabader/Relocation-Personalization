@@ -8,12 +8,10 @@ def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, ht
                 (FIPS_d['State']!= 'District Of Columbia')]
 
     # include only counties that are commonly included in all datasets
-    # print("Starting county count: " + str(len(FIPS_d.index)))
     FIPS_d = FIPS_d.filter(items = fbi_d.index.unique(), axis=0) # crime
     FIPS_d = FIPS_d.filter(items = ter_d.index.unique(), axis=0) # terrain
     FIPS_d = FIPS_d.filter(items = rel_d.index.unique(), axis=0) # religion
     FIPS_d = FIPS_d.filter(items = hth_d.index.unique(), axis=0) # health
-    # print("Final county count: " + str(len(FIPS_d.index)))
 
     # add 'Scores' column with 0 penalty points to each dataset to accumulate penalty points by topic
     dfs = [FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, hth_d, fbi_d, pol_d, tax_d]
@@ -27,7 +25,6 @@ def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, ht
     for df in dfs_str:
         exec(df+'_imp = []')
 
-    # create grader function (0 penality if at least/most)
     # create grader function (0 penality if at least/most)
     def grader(df, response_row, actual):
         
@@ -60,13 +57,11 @@ def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, ht
     # Rel-1) I prefer the % of the population adhering to any religion to be:
     score, imp_score = grader(rel_d, 47, 'All Religious Adherence Rate D') 
     rel_d['Scores'] += score 
-    # rel_d_imp.append(imp_score)
 
     # Rel-2) I prefer there to be a significant presence of this religious group:
     if quiz.iloc[48,2] != 0:
         rel2_response = rel_d.loc[:,str(quiz.iloc[48,2])]
         rel_d['Scores'] += (((100 - rel2_response)/25)**2) * quiz.iloc[48,3]
-    # rel_d_imp.append(quiz.iloc[48,3]) # imp_score
 
     # add rel scores to FIPS_d score total
     FIPS_d['Scores'] = FIPS_d['Scores'].add(rel_d['Scores'], fill_value=0)
@@ -79,7 +74,6 @@ def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, ht
     for sd_cat in sd_cats:
         score, imp_score = grader(sd_d, start_loc + sd_cats.index(sd_cat), sd_cat)
         sd_d['Scores'] += score
-        # sd_d_imp.append(imp_score)
 
     # SD-6) For racial distribution, I prefer there to be AT LEAST this percentage of each race:
     races = ['% Asian students', '% Black students', '% Hawaiian Native/Pacific Islander students', '% Hispanic students',
@@ -87,7 +81,6 @@ def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, ht
 
     for race in races:
         sd_d['Scores'] += sd_d[race].apply(lambda x: max(((quiz.iloc[races.index(race)+40,2] - x)/25)**2,0) * quiz.iloc[46,3])
-    # sd_d_imp.append(imp_score)
 
     # SD) get lowest penalty score district for each county, reset series to dataframe, reset index
     sd_d_grouped = sd_d.groupby(['County','State'])['Scores'].min().to_frame().reset_index() # get district with lowest penalty
@@ -115,7 +108,6 @@ def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, ht
     for terrain in terrains:
         ter_d['Scores'] += ter_d[terrain].apply(
             lambda x: max(((quiz.iloc[terrains.index(terrain)+14,2] - x)/25)**2,0) * quiz.iloc[terrains.index(terrain)+14,3])
-    # ter_d_imp.append(quiz.iloc[terrains.index(terrain)+14,3])
 
     # Ter) add ter scores to FIPS_d score total
     FIPS_d['Scores'] = FIPS_d['Scores'].add(ter_d['Scores'], fill_value=0)
@@ -128,7 +120,6 @@ def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, ht
     for wth_cat in wth_cats:
         score, imp_score = grader(wth_d, start_loc + wth_cats.index(wth_cat), wth_cat)
         wth_d['Scores'] += score
-        # wth_d_imp.append(imp_score)
 
     # Wth) add state Wth data to FIPS Scores through join
     FIPS_d = FIPS_d.reset_index()
@@ -148,7 +139,6 @@ def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, ht
     for acs_cat in acs_cats:
         score, imp_score = grader(acs_d, start_loc + acs_cats.index(acs_cat), acs_cat)
         acs_d['Scores'] += score
-        # acs_d_imp.append(imp_score)
 
     # ACS-8) For racial distribution, I prefer the percentage of each race to be AT LEAST:
     races = ['% Asian', '% Black', '% Hawaiian or Pacific Islander', '% Hispanic', '% Native American', 
@@ -156,7 +146,6 @@ def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, ht
 
     for race in races:
         acs_d['Scores'] += acs_d[race].apply(lambda x: max(((quiz.iloc[races.index(race)+7,2] - x)/25)**2,0) * quiz.iloc[14,3])
-    # acs_d_imp.append(quiz.iloc[14,3])
 
     # Acs) last questions
     acs_cats = ['Median Household Income D', 'Median Gross Rent D', 'Average Commute to Work D']
@@ -165,18 +154,13 @@ def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, ht
     for acs_cat in acs_cats:
         score, imp_score = grader(acs_d, start_loc + acs_cats.index(acs_cat), acs_cat)
         acs_d['Scores'] += score
-        # acs_d_imp.append(imp_score)
 
     # ACS) add acs scores to FIPS_d score total
     FIPS_d['Scores'] = FIPS_d['Scores'].add(acs_d['Scores'], fill_value=0)
 
-
     # test against only the most recent completed year but keep entirity for time series analysis
     hth_d_all, hth_d = most_recent(hth_d)
 
-    # Hth) Look at only the most recent completed year but keep entirity for time series analysis
-    # hth_d_all = hth_d.copy()
-    # hth_d = hth_d_all[hth_d['Year']==2020]
 
     # Hth) all questions
     hth_cats = ['Primary Care Physicians Per 100,000 Population D',
@@ -199,7 +183,6 @@ def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, ht
     for hth_cat in hth_cats:
         score, imp_score = grader(hth_d, start_loc + hth_cats.index(hth_cat), hth_cat)
         hth_d['Scores'] += score
-        # hth_d_imp.append(imp_score)
 
     # Hth) add hth scores to FIPS_d score total
     FIPS_d['Scores'] = FIPS_d['Scores'].add(hth_d['Scores'], fill_value=0)
@@ -215,7 +198,6 @@ def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, ht
     for fbi_cat in fbi_cats:
         score, imp_score = grader(fbi_d, start_loc + fbi_cats.index(fbi_cat), fbi_cat)
         fbi_d['Scores'] += score
-        # fbi_d_imp.append(imp_score)
 
     # Fbi) add fbi scores to FIPS_d score total
     FIPS_d['Scores'] = FIPS_d['Scores'].add(fbi_d['Scores'], fill_value=0)
@@ -223,9 +205,6 @@ def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, ht
     # Pol) blanks in this dataset are equal to zero
     pol_d = pol_d.fillna(0)
 
-    # Pol) test against only the most recent completed year but keep entirity for time series analysis
-    # pol_d_all = pol_d.copy()
-    # pol_d = pol_d_all[pol_d['Year']==2020]
     # test against only the most recent completed year but keep entirity for time series analysis
     pol_d_all, pol_d = most_recent(pol_d)
 
@@ -233,7 +212,6 @@ def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, ht
     if quiz.iloc[66,2] != 0:
         pol_response = pol_d.loc[:,str(quiz.iloc[66,2])]
         pol_d['Scores'] += (((100 - pol_response)/25)**2) * quiz.iloc[66,3]
-    # pol_d_imp.append(quiz.iloc[66,3]) # imp_score
 
     # Pol) add pol scores to FIPS_d score total
     FIPS_d['Scores'] = FIPS_d['Scores'].add(pol_d['Scores'], fill_value=0)
@@ -246,7 +224,6 @@ def rdpm_recommender_condensed(quiz,FIPS_d, rel_d, sd_d, ter_d, wth_d, acs_d, ht
     for tax_cat in tax_cats:
         score, imp_score = grader(tax_d, start_loc + tax_cats.index(tax_cat), tax_cat)
         tax_d['Scores'] += score
-        # tax_d_imp.append(imp_score)
 
     # Tax) add state tax data to FIPS Scores through join
     tax_d_scores = tax_d[['State','Scores']].rename({'Scores':'tax_Scores'}, axis='columns')

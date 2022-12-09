@@ -1,7 +1,7 @@
 relocation-destination-personalization-machination
 ==============================
 
-[SIADS699 Capstone Project Report](https://docs.google.com/document/d/1FIWErmp5vROyqxZ-FWEhxqRoRkev7X2j9UK_XVgYvN8/edit)
+[SIADS699 Capstone Project Report](https://docs.google.com/document/d/1FIWErmp5vROyqxZ-FWEhxqRoRkev7X2j9UK_XVgYvN8)
 
 Team Members:
 ------------
@@ -34,7 +34,7 @@ How To Run This Code
 In a new environment, install the requirements in the requirements.txt file. This can be done with the examples shown here using pip or conda:
 
     pip install -r requirements.txt
-    
+
     conda install --file requirements.txt
 
 #### 1. Data Cleaning

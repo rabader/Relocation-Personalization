@@ -89,6 +89,3 @@ def get_pca_components(df,impute_feature_col_lst,pca_feature_col_lst,n_component
     return pca_feature_names, pca_chart, imputed_df, imputed_idx_df
 
 
-# def perform_knn_analysis(user_df,county_df):
-
-

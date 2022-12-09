@@ -37,7 +37,8 @@ Project Organization
 Data Access Statement
 ------------
 
-TO DO!!!!
+Data used in this project was retrieved from Social Explorer, at https://www.socialexplorer.com/explore-tables
+Access to this data is paywalled, but this link https://www.lib.umich.edu/database/link/10387 takes you to the subscription version provided by the University of Michigan Library, which is the method we used for access.
 
 --------
 

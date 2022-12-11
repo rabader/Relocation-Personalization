@@ -1,7 +1,9 @@
 relocation-destination-personalization-machination
 ==============================
 
-[SIADS699 Capstone Project Report](https://docs.google.com/document/d/1FIWErmp5vROyqxZ-FWEhxqRoRkev7X2j9UK_XVgYvN8)
+[SIADS699 Capstone Project Blog/Report](https://docs.google.com/document/d/1FIWErmp5vROyqxZ-FWEhxqRoRkev7X2j9UK_XVgYvN8)
+
+[Project Overview Video + Demo](https://drive.google.com/file/d/18kUIyaUUqIjFS9_mHYpZF7l1lGarIwas/view?usp=sharing)
 
 Team Members:
 ------------
